@@ -1,708 +1,1288 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>텔시코기 대본 편집기</title>
-<meta name="description" content="웰시코기 유튜브 채널 AI 자동화 대본 편집 및 승인 도구">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>텔시코기 대본 편집기</title>
+  <meta name="description" content="웰시코기 유튜브 채널 AI 자동화 대본 편집 및 승인 도구">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-:root {
-  --bg:       #07090f;
-  --bg2:      #0d1117;
-  --surface:  rgba(255,255,255,0.04);
-  --border:   rgba(255,255,255,0.07);
-  --border2:  rgba(255,255,255,0.12);
-  --orange:   #ff5c35;
-  --orange2:  #ff7c55;
-  --blue:     #3b82f6;
-  --green:    #10b981;
-  --text:     #e2e8f0;
-  --text2:    #94a3b8;
-  --text3:    #475569;
-  --radius:   12px;
-}
+    :root {
+      --bg: #0a0d14;
+      --bg2: #111520;
+      --surface: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.09);
+      --border2: rgba(255, 255, 255, 0.18);
+      --orange: #ff6040;
+      --orange2: #ff8c6a;
+      --blue: #4f90ff;
+      --green: #12c98a;
+      --text: #f0f4ff;
+      --text2: #a8b8d0;
+      --text3: #5a6a82;
+      --radius: 14px;
+    }
 
-body {
-  font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding: 0 0 80px;
-  overflow-x: hidden;
-}
+    body {
+      font-family: 'Pretendard', 'Noto Sans KR', -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 80px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
 
-/* Gradient orbs */
-body::before, body::after {
-  content: '';
-  position: fixed;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-}
-body::before {
-  width: 600px; height: 600px;
-  top: -200px; left: -200px;
-  background: radial-gradient(circle, rgba(255,92,53,.08) 0%, transparent 70%);
-}
-body::after {
-  width: 500px; height: 500px;
-  bottom: -150px; right: -150px;
-  background: radial-gradient(circle, rgba(59,130,246,.07) 0%, transparent 70%);
-}
+    /* Gradient orbs */
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-/* ── HEADER ── */
-header {
-  position: relative; z-index: 10;
-  display: flex; align-items: center; gap: 14px;
-  padding: 20px 32px;
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  background: rgba(7,9,15,.7);
-  position: sticky; top: 0;
-}
-.logo {
-  width: 36px; height: 36px;
-  background: linear-gradient(135deg, var(--orange), #ff8c66);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; flex-shrink: 0;
-  box-shadow: 0 0 20px rgba(255,92,53,.35);
-}
-header h1 { font-size: 17px; font-weight: 700; color: #fff; }
-.hdate { font-size: 12px; color: var(--text3); margin-left: auto; }
-.badge {
-  background: linear-gradient(135deg, var(--orange), #ff8c66);
-  color: #fff; font-size: 10px; font-weight: 800;
-  padding: 3px 9px; border-radius: 20px; letter-spacing: .8px;
-}
+    body::before {
+      width: 600px;
+      height: 600px;
+      top: -200px;
+      left: -200px;
+      background: radial-gradient(circle, rgba(255, 92, 53, .08) 0%, transparent 70%);
+    }
 
-/* ── LAYOUT ── */
-.main { max-width: 1200px; margin: 0 auto; padding: 28px 24px 0; position: relative; z-index: 1; }
+    body::after {
+      width: 500px;
+      height: 500px;
+      bottom: -150px;
+      right: -150px;
+      background: radial-gradient(circle, rgba(59, 130, 246, .07) 0%, transparent 70%);
+    }
 
-/* ── PIPELINE ── */
-.section-label {
-  font-size: 10px; font-weight: 700; color: var(--text3);
-  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px;
-}
-.pipeline-wrap { margin-bottom: 28px; }
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 36px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      background: rgba(10, 13, 20, .85);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-.pipeline-track {
-  display: flex; gap: 0; position: relative;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-.pipeline-track::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, var(--orange) 0%, var(--blue) 50%, var(--green) 100%);
-  opacity: .5;
-}
+    .logo {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--orange), #ff8c66);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      box-shadow: 0 0 24px rgba(255, 92, 53, .4);
+    }
 
-.agent-step {
-  flex: 1; display: flex; flex-direction: column; align-items: center;
-  padding: 18px 8px; cursor: pointer;
-  border-right: 1px solid var(--border);
-  transition: background .2s;
-  position: relative; overflow: hidden;
-}
-.agent-step:last-child { border-right: none; }
-.agent-step::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,92,53,.08), transparent);
-  opacity: 0; transition: opacity .2s;
-}
-.agent-step:hover::after { opacity: 1; }
-.agent-step.active { background: rgba(255,92,53,.06); }
-.agent-step.active::after { opacity: 1; }
+    header h1 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.3px;
+    }
 
-.step-icon { font-size: 20px; margin-bottom: 6px; line-height: 1; }
-.step-label { font-size: 11px; font-weight: 700; color: var(--text3); }
-.step-sub { font-size: 10px; color: var(--text3); opacity: .6; margin-top: 2px; }
-.agent-step.active .step-label { color: var(--orange); }
-.agent-step.active .step-sub { color: var(--orange); opacity: .6; }
+    .hdate {
+      font-size: 13px;
+      color: var(--text3);
+      margin-left: auto;
+    }
 
-/* ── AGENT PANEL ── */
-.agent-detail {
-  display: none; margin-top: 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  animation: fadeIn .2s ease;
-}
-.agent-detail.open { display: block; }
-@keyframes fadeIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+    .badge {
+      background: linear-gradient(135deg, var(--orange), #ff8c66);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: .8px;
+    }
 
-.detail-header {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 10px;
-  background: rgba(255,255,255,.02);
-}
-.d-num {
-  background: var(--orange); color: #fff;
-  font-size: 10px; font-weight: 800;
-  padding: 3px 9px; border-radius: 20px;
-}
-.d-name { font-size: 14px; font-weight: 700; }
-.d-desc { font-size: 12px; color: var(--text3); margin-left: auto; }
-.detail-body { padding: 16px 20px; }
+    /* ── LAYOUT ── */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 24px 0;
+      position: relative;
+      z-index: 1;
+    }
 
-/* ── AGENT 1 TABLE ── */
-.sel-table { width: 100%; border-collapse: collapse; }
-.sel-table th {
-  font-size: 10px; font-weight: 700; color: var(--text3);
-  text-transform: uppercase; letter-spacing: .5px;
-  padding: 6px 10px; text-align: left;
-  border-bottom: 1px solid var(--border);
-}
-.sel-table td {
-  font-size: 12px; color: var(--text2);
-  padding: 10px 10px; border-bottom: 1px solid var(--border);
-  vertical-align: top; line-height: 1.5;
-}
-.sel-table tr:last-child td { border-bottom: none; }
-.rank-badge {
-  display: inline-block;
-  background: var(--orange); color: #fff;
-  font-size: 10px; font-weight: 700;
-  padding: 2px 7px; border-radius: 20px;
-}
-.score-bar { display: flex; align-items: center; gap: 8px; }
-.score-fill { height: 4px; border-radius: 2px; background: linear-gradient(90deg,var(--orange),var(--orange2)); }
-.score-num { font-size: 12px; color: var(--orange); font-weight: 700; min-width: 32px; }
+    /* ── PIPELINE ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
 
-/* ── GRIDS ── */
-.grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .pipeline-wrap {
+      margin-bottom: 28px;
+    }
 
-/* ── Agent 2 CARDS ── */
-.crawl-card {
-  background: rgba(255,255,255,.02);
-  border: 1px solid var(--border);
-  border-radius: 10px; padding: 14px;
-  transition: border-color .2s;
-}
-.crawl-card:hover { border-color: var(--border2); }
-.crawl-card-rank { font-size: 10px; font-weight: 700; color: var(--orange); margin-bottom: 6px; }
-.crawl-card-title { font-size: 11px; color: var(--text2); margin-bottom: 10px; line-height: 1.5; }
-.crawl-facts { list-style: none; display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-.crawl-facts li {
-  font-size: 11px; color: var(--text3); line-height: 1.4;
-  padding-left: 12px; position: relative;
-}
-.crawl-facts li::before {
-  content: '▸'; position: absolute; left: 0;
-  color: var(--orange); font-size: 9px; top: 2px;
-}
-.btn-raw {
-  background: rgba(255,255,255,.04); border: 1px solid var(--border);
-  color: var(--text3); font-size: 10px; font-weight: 600;
-  padding: 5px 10px; border-radius: 6px; cursor: pointer;
-  font-family: inherit; width: 100%; text-align: left;
-  transition: all .2s;
-}
-.btn-raw:hover { background: rgba(255,255,255,.07); color: var(--text2); }
-.raw-text {
-  display: none; margin-top: 10px; font-size: 10px; color: var(--text3);
-  line-height: 1.8; white-space: pre-wrap; max-height: 200px;
-  overflow-y: auto; border-top: 1px solid var(--border); padding-top: 10px;
-}
+    .pipeline-track {
+      display: flex;
+      gap: 0;
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
 
-/* ── Agent 3 SCRIPT CARDS ── */
-.sp-card {
-  background: rgba(255,255,255,.02);
-  border: 1px solid var(--border);
-  border-radius: 10px; padding: 14px;
-}
-.sp-rank { font-size: 10px; font-weight: 700; color: var(--orange); margin-bottom: 10px; }
-.sp-part { margin-bottom: 10px; }
-.sp-part-label {
-  font-size: 9px; font-weight: 800; text-transform: uppercase;
-  letter-spacing: 1px; margin-bottom: 5px;
-}
-.sp-part-label.hook { color: var(--orange); }
-.sp-part-label.explain { color: var(--blue); }
-.sp-part-label.korea { color: var(--green); }
-.sp-part-text { font-size: 11px; color: var(--text2); line-height: 1.6; }
+    .pipeline-track::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--orange) 0%, var(--blue) 50%, var(--green) 100%);
+      opacity: .5;
+    }
 
-/* ── Agent 4 REVIEW ── */
-.review-card {
-  background: rgba(255,255,255,.02);
-  border: 1px solid var(--border);
-  border-radius: 10px; padding: 14px;
-}
-.review-card-hd { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.review-card-rank { font-size: 11px; color: var(--text3); }
-.verdict {
-  font-size: 10px; font-weight: 700;
-  padding: 3px 9px; border-radius: 20px; margin-left: auto;
-}
-.verdict-pass { background: rgba(16,185,129,.15); color: #6ee7b7; }
-.verdict-fail { background: rgba(239,68,68,.15); color: #fca5a5; }
-.check-item { display: flex; gap: 8px; font-size: 11px; color: var(--text3); align-items: flex-start; line-height: 1.5; margin-bottom: 4px; }
+    .agent-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 18px 8px;
+      cursor: pointer;
+      border-right: 1px solid var(--border);
+      transition: background .2s;
+      position: relative;
+      overflow: hidden;
+    }
 
-/* ── Agent 5 SEO ── */
-.seo-card {
-  background: rgba(255,255,255,.02);
-  border: 1px solid var(--border);
-  border-radius: 10px; padding: 14px;
-}
-.seo-rank { font-size: 10px; font-weight: 700; color: var(--orange); margin-bottom: 10px; }
-.seo-title-item {
-  font-size: 11px; color: var(--text3);
-  padding: 6px 10px; background: rgba(255,255,255,.03);
-  border-radius: 6px; margin-bottom: 4px; line-height: 1.4;
-}
-.seo-title-item.t1 { color: var(--text); border-left: 2px solid var(--orange); }
-.seo-thumb {
-  background: #000; border: 1px solid var(--border);
-  border-radius: 6px; padding: 10px 12px; margin-top: 8px;
-}
-.seo-thumb-l1 { font-size: 14px; font-weight: 800; color: #fff; }
-.seo-thumb-l2 { font-size: 10px; color: var(--text3); margin-top: 2px; }
+    .agent-step:last-child {
+      border-right: none;
+    }
 
-/* ── EDIT CARDS ── */
-.cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; padding: 20px; }
-.card {
-  background: rgba(255,255,255,.03);
-  border: 1px solid var(--border);
-  border-radius: 14px; padding: 20px;
-  display: flex; flex-direction: column; gap: 14px;
-  transition: border-color .25s, box-shadow .25s;
-}
-.card:hover { border-color: var(--border2); }
-.card.approved {
-  border-color: rgba(16,185,129,.4);
-  box-shadow: 0 0 24px rgba(16,185,129,.08);
-}
-.card-header { display: flex; align-items: center; gap: 8px; }
-.card-rank {
-  background: rgba(255,255,255,.07); color: var(--text2);
-  font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px;
-}
-.card-score { font-size: 12px; color: var(--orange); font-weight: 700; }
-.card-source { font-size: 11px; color: var(--text3); margin-left: auto; }
-.card-title { font-size: 12px; color: var(--text2); line-height: 1.5; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-.script-part { display: flex; flex-direction: column; gap: 6px; }
-.part-label { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; }
-.sec { background: rgba(255,255,255,.06); color: var(--text3); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
-.part-label.hook { color: var(--orange); }
-.part-label.explain { color: var(--blue); }
-.part-label.korea { color: var(--green); }
-.part-text {
-  background: rgba(255,255,255,.03); border: 1px solid var(--border);
-  border-radius: 8px; padding: 10px 12px;
-  font-size: 13px; line-height: 1.7; color: var(--text);
-  outline: none; resize: vertical; font-family: inherit; width: 100%;
-  transition: border-color .2s;
-}
-.part-text:focus { border-color: rgba(255,92,53,.4); }
+    .agent-step::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 92, 53, .08), transparent);
+      opacity: 0;
+      transition: opacity .2s;
+    }
 
-/* Review inline */
-.review-inline {
-  background: rgba(255,255,255,.02); border: 1px solid var(--border);
-  border-radius: 8px; padding: 10px 12px;
-}
-.ri-label { font-size: 9px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
-.ri-item { display: flex; gap: 6px; font-size: 11px; color: var(--text2); align-items: flex-start; line-height: 1.4; }
-.ri-tag { flex-shrink: 0; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 20px; }
-.ri-pass { background: rgba(16,185,129,.15); color: #6ee7b7; }
-.ri-warn { background: rgba(245,158,11,.15); color: #fcd38a; }
+    .agent-step:hover::after {
+      opacity: 1;
+    }
 
-/* SEO section */
-.seo-edit-section { border-top: 1px solid var(--border); padding-top: 12px; }
-.seo-edit-label { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; }
-.title-options { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; }
-.title-option { display: flex; align-items: flex-start; gap: 8px; }
-.title-option input[type="radio"] { accent-color: var(--orange); flex-shrink: 0; margin-top: 3px; }
-.title-option label { font-size: 12px; color: var(--text2); cursor: pointer; line-height: 1.4; }
-.tags-list { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
-.tag-item {
-  background: rgba(255,255,255,.04); color: var(--text3);
-  font-size: 10px; padding: 3px 8px; border-radius: 20px;
-  border: 1px solid var(--border);
-}
-.thumb-prev { background: #000; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
-.thumb-prev .t1 { font-size: 15px; font-weight: 800; color: #fff; }
-.thumb-prev .t2 { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .agent-step.active {
+      background: rgba(255, 92, 53, .06);
+    }
 
-/* Card footer */
-.card-footer { display: flex; gap: 8px; }
-.btn-approve {
-  flex: 1; background: rgba(16,185,129,.12);
-  color: #6ee7b7; border: 1px solid rgba(16,185,129,.25);
-  border-radius: 8px; padding: 9px; font-size: 12px; font-weight: 700;
-  cursor: pointer; font-family: inherit; transition: all .2s;
-}
-.btn-approve:hover { background: rgba(16,185,129,.2); }
-.btn-approve.approved { background: rgba(16,185,129,.25); color: #34d399; border-color: rgba(16,185,129,.4); }
-.btn-reset {
-  background: rgba(255,255,255,.04); color: var(--text3);
-  border: 1px solid var(--border); border-radius: 8px;
-  padding: 9px 12px; font-size: 12px; cursor: pointer;
-  font-family: inherit; transition: background .2s;
-}
-.btn-reset:hover { background: rgba(255,255,255,.07); }
+    .agent-step.active::after {
+      opacity: 1;
+    }
 
-/* ── SAVE BAR ── */
-.save-bar {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-  background: rgba(7,9,15,.85); backdrop-filter: blur(16px);
-  border-top: 1px solid var(--border);
-  padding: 14px 32px; display: flex; align-items: center; justify-content: space-between;
-}
-.save-status { font-size: 13px; color: var(--text3); }
-.save-status.has { color: var(--green); }
-.btn-save {
-  background: linear-gradient(135deg, var(--orange), #ff8c66);
-  color: #fff; border: none; border-radius: 9px;
-  padding: 10px 24px; font-size: 13px; font-weight: 700;
-  cursor: pointer; font-family: inherit; transition: opacity .2s;
-  box-shadow: 0 4px 20px rgba(255,92,53,.3);
-}
-.btn-save:hover { opacity: .9; }
-.btn-save:disabled { background: rgba(255,255,255,.07); color: var(--text3); box-shadow: none; cursor: default; }
+    .step-icon {
+      font-size: 22px;
+      margin-bottom: 7px;
+      line-height: 1;
+    }
 
-/* ── TOAST ── */
-.toast {
-  position: fixed; top: 24px; right: 28px; z-index: 200;
-  background: var(--green); color: #fff;
-  padding: 11px 20px; border-radius: 10px;
-  font-size: 13px; font-weight: 600;
-  opacity: 0; transform: translateY(-10px);
-  transition: all .25s; pointer-events: none;
-  box-shadow: 0 8px 32px rgba(16,185,129,.3);
-}
-.toast.show { opacity: 1; transform: translateY(0); }
+    .step-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text3);
+    }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 1100px) {
-  .grid3, .cards { grid-template-columns: 1fr; }
-}
-@media (max-width: 640px) {
-  header { padding: 16px 18px; }
-  .main { padding: 18px 14px 0; }
-  .d-desc { display: none; }
-  .agent-step { padding: 14px 4px; }
-  .step-sub { display: none; }
-  .save-bar { padding: 12px 18px; }
-}
-</style>
+    .step-sub {
+      font-size: 11px;
+      color: var(--text3);
+      opacity: .6;
+      margin-top: 2px;
+    }
+
+    .agent-step.active .step-label {
+      color: var(--orange);
+    }
+
+    .agent-step.active .step-sub {
+      color: var(--orange);
+      opacity: .6;
+    }
+
+    /* ── AGENT PANEL ── */
+    .agent-detail {
+      display: none;
+      margin-top: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      animation: fadeIn .2s ease;
+    }
+
+    .agent-detail.open {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .detail-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, .02);
+    }
+
+    .d-num {
+      background: var(--orange);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .d-name {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .d-desc {
+      font-size: 13px;
+      color: var(--text3);
+      margin-left: auto;
+    }
+
+    .detail-body {
+      padding: 20px 24px;
+    }
+
+    /* ── AGENT 1 TABLE ── */
+    .sel-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .sel-table th {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sel-table td {
+      font-size: 13px;
+      color: var(--text2);
+      padding: 12px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.6;
+    }
+
+    .sel-table tr.picked td {
+      color: var(--text);
+      background: rgba(255, 96, 64, .04);
+    }
+
+    .sel-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rank-badge {
+      display: inline-block;
+      background: var(--orange);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 20px;
+    }
+
+    .score-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .score-fill {
+      height: 5px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--orange), var(--orange2));
+    }
+
+    .score-num {
+      font-size: 13px;
+      color: var(--orange);
+      font-weight: 700;
+      min-width: 36px;
+    }
+
+    /* ── GRIDS ── */
+    .grid3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    /* ── Agent 2 CARDS ── */
+    .crawl-card {
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      transition: border-color .2s;
+    }
+
+    .crawl-card:hover {
+      border-color: var(--border2);
+    }
+
+    .crawl-card-rank {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 8px;
+    }
+
+    .crawl-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 12px;
+      line-height: 1.55;
+    }
+
+    .crawl-facts {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .crawl-facts li {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.55;
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .crawl-facts li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--orange);
+      font-size: 10px;
+      top: 3px;
+    }
+
+    .body-text {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.8;
+      white-space: pre-wrap;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      margin-top: 4px;
+    }
+
+    /* ── Agent 3 SCRIPT CARDS ── */
+    .sp-card {
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .sp-rank {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+
+    .sp-part {
+      margin-bottom: 12px;
+    }
+
+    .sp-part-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .sp-part-label.hook {
+      color: var(--orange);
+    }
+
+    .sp-part-label.explain {
+      color: var(--blue);
+    }
+
+    .sp-part-label.korea {
+      color: var(--green);
+    }
+
+    .sp-part-text {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.75;
+    }
+
+    /* ── Agent 4 REVIEW ── */
+    .review-card {
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .review-card-hd {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .review-card-rank {
+      font-size: 13px;
+      color: var(--text3);
+      font-weight: 600;
+    }
+
+    .verdict {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-left: auto;
+    }
+
+    .verdict-pass {
+      background: rgba(18, 201, 138, .15);
+      color: #5edeba;
+    }
+
+    .verdict-fail {
+      background: rgba(239, 68, 68, .15);
+      color: #fca5a5;
+    }
+
+    .check-item {
+      display: flex;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text2);
+      align-items: flex-start;
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+
+    /* ── Agent 5 SEO ── */
+    .seo-card {
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .seo-rank {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+
+    .seo-title-item {
+      font-size: 13px;
+      color: var(--text3);
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, .03);
+      border-radius: 8px;
+      margin-bottom: 5px;
+      line-height: 1.5;
+    }
+
+    .seo-title-item.t1 {
+      color: var(--text);
+      font-weight: 600;
+      border-left: 3px solid var(--orange);
+    }
+
+    .seo-thumb {
+      background: #050608;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-top: 10px;
+    }
+
+    .seo-thumb-l1 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .seo-thumb-l2 {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 3px;
+    }
+
+    /* ── EDIT CARDS ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      padding: 24px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .035);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: border-color .25s, box-shadow .25s;
+    }
+
+    .card:hover {
+      border-color: var(--border2);
+    }
+
+    .card.approved {
+      border-color: rgba(18, 201, 138, .4);
+      box-shadow: 0 0 28px rgba(18, 201, 138, .09);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-rank {
+      background: rgba(255, 255, 255, .08);
+      color: var(--text2);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .card-score {
+      font-size: 13px;
+      color: var(--orange);
+      font-weight: 700;
+    }
+
+    .card-source {
+      font-size: 12px;
+      color: var(--text3);
+      margin-left: auto;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.55;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .script-part {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .part-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+    }
+
+    .sec {
+      background: rgba(255, 255, 255, .07);
+      color: var(--text3);
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-weight: 600;
+    }
+
+    .part-label.hook {
+      color: var(--orange);
+    }
+
+    .part-label.explain {
+      color: var(--blue);
+    }
+
+    .part-label.korea {
+      color: var(--green);
+    }
+
+    .part-text {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px 14px;
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text);
+      outline: none;
+      resize: vertical;
+      font-family: inherit;
+      width: 100%;
+      transition: border-color .2s;
+    }
+
+    .part-text:focus {
+      border-color: rgba(255, 96, 64, .45);
+    }
+
+    /* Review inline */
+    .review-inline {
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .ri-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 8px;
+    }
+
+    .ri-item {
+      display: flex;
+      gap: 7px;
+      font-size: 13px;
+      color: var(--text2);
+      align-items: flex-start;
+      line-height: 1.55;
+    }
+
+    .ri-tag {
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .ri-pass {
+      background: rgba(18, 201, 138, .15);
+      color: #5edeba;
+    }
+
+    .ri-warn {
+      background: rgba(245, 158, 11, .15);
+      color: #fcd38a;
+    }
+
+    /* SEO section */
+    .seo-edit-section {
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+
+    .seo-edit-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: 10px;
+    }
+
+    .title-options {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .title-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+    }
+
+    .title-option input[type="radio"] {
+      accent-color: var(--orange);
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .title-option label {
+      font-size: 13px;
+      color: var(--text2);
+      cursor: pointer;
+      line-height: 1.5;
+    }
+
+    .tags-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .tag-item {
+      background: rgba(255, 255, 255, .05);
+      color: var(--text3);
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .thumb-prev {
+      background: #050608;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px 14px;
+    }
+
+    .thumb-prev .t1 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .thumb-prev .t2 {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 3px;
+    }
+
+    /* Card footer */
+    .card-footer {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-approve {
+      flex: 1;
+      background: rgba(18, 201, 138, .12);
+      color: #5edeba;
+      border: 1px solid rgba(18, 201, 138, .25);
+      border-radius: 9px;
+      padding: 11px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .2s;
+    }
+
+    .btn-approve:hover {
+      background: rgba(18, 201, 138, .2);
+    }
+
+    .btn-approve.approved {
+      background: rgba(18, 201, 138, .28);
+      color: #34d399;
+      border-color: rgba(18, 201, 138, .45);
+    }
+
+    .btn-reset {
+      background: rgba(255, 255, 255, .04);
+      color: var(--text3);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 11px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .2s;
+    }
+
+    .btn-reset:hover {
+      background: rgba(255, 255, 255, .07);
+    }
+
+    /* ── SAVE BAR ── */
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(10, 13, 20, .9);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      padding: 16px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .save-status {
+      font-size: 14px;
+      color: var(--text3);
+    }
+
+    .save-status.has {
+      color: var(--green);
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, var(--orange), #ff8c66);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 26px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity .2s;
+      box-shadow: 0 4px 24px rgba(255, 96, 64, .35);
+    }
+
+    .btn-save:hover {
+      opacity: .88;
+    }
+
+    .btn-save:disabled {
+      background: rgba(255, 255, 255, .07);
+      color: var(--text3);
+      box-shadow: none;
+      cursor: default;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      top: 24px;
+      right: 28px;
+      z-index: 200;
+      background: var(--green);
+      color: #fff;
+      padding: 11px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all .25s;
+      pointer-events: none;
+      box-shadow: 0 8px 32px rgba(16, 185, 129, .3);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+
+      .grid3,
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      header {
+        padding: 14px 18px;
+      }
+
+      .main {
+        padding: 16px 14px 0;
+      }
+
+      .d-desc {
+        display: none;
+      }
+
+      .agent-step {
+        padding: 12px 4px;
+      }
+
+      .step-sub {
+        display: none;
+      }
+
+      .save-bar {
+        padding: 12px 18px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-  <div class="logo">🐾</div>
-  <h1>텔시코기 대본 편집기</h1>
-  <span class="badge">CORGI</span>
-  <span class="hdate" id="headerDate"></span>
-</header>
+  <header>
+    <div class="logo">🐾</div>
+    <h1>텔시코기 대본 편집기</h1>
+    <span class="badge">CORGI</span>
+    <span class="hdate" id="headerDate"></span>
+  </header>
 
-<div class="main">
+  <div class="main">
 
-  <!-- PIPELINE -->
-  <div class="pipeline-wrap">
-    <div class="section-label">에이전트 파이프라인</div>
-    <div class="pipeline-track">
-      <div class="agent-step" onclick="selectAgent(1)" id="step-1">
-        <div class="step-icon">🔍</div>
-        <div class="step-label">Agent 1</div>
-        <div class="step-sub">뉴스 선별</div>
+    <!-- PIPELINE -->
+    <div class="pipeline-wrap">
+      <div class="section-label">에이전트 파이프라인</div>
+      <div class="pipeline-track">
+        <div class="agent-step" onclick="selectAgent(1)" id="step-1">
+          <div class="step-icon">🔍</div>
+          <div class="step-label">Agent 1</div>
+          <div class="step-sub">뉴스 선별</div>
+        </div>
+        <div class="agent-step" onclick="selectAgent(2)" id="step-2">
+          <div class="step-icon">📥</div>
+          <div class="step-label">Agent 2</div>
+          <div class="step-sub">원문 수집</div>
+        </div>
+        <div class="agent-step" onclick="selectAgent(3)" id="step-3">
+          <div class="step-icon">✍️</div>
+          <div class="step-label">Agent 3</div>
+          <div class="step-sub">대본 생성</div>
+        </div>
+        <div class="agent-step" onclick="selectAgent(4)" id="step-4">
+          <div class="step-icon">🧐</div>
+          <div class="step-label">Agent 4</div>
+          <div class="step-sub">검토</div>
+        </div>
+        <div class="agent-step" onclick="selectAgent(5)" id="step-5">
+          <div class="step-icon">📈</div>
+          <div class="step-label">Agent 5</div>
+          <div class="step-sub">SEO</div>
+        </div>
+        <div class="agent-step" onclick="selectAgent(6)" id="step-6">
+          <div class="step-icon">✏️</div>
+          <div class="step-label">Agent 6</div>
+          <div class="step-sub">편집·승인</div>
+        </div>
       </div>
-      <div class="agent-step" onclick="selectAgent(2)" id="step-2">
-        <div class="step-icon">📥</div>
-        <div class="step-label">Agent 2</div>
-        <div class="step-sub">원문 수집</div>
+
+      <!-- Agent Panels -->
+      <div class="agent-detail" id="agent-panel-1">
+        <div class="detail-header">
+          <span class="d-num">Agent 1</span>
+          <span class="d-name">뉴스 선별</span>
+          <span class="d-desc">RSS 수집 → 텔시코기 스코어링 → TOP 3</span>
+        </div>
+        <div class="detail-body">
+          <table class="sel-table" id="agent1-table"></table>
+        </div>
       </div>
-      <div class="agent-step" onclick="selectAgent(3)" id="step-3">
-        <div class="step-icon">✍️</div>
-        <div class="step-label">Agent 3</div>
-        <div class="step-sub">대본 생성</div>
+
+      <div class="agent-detail" id="agent-panel-2">
+        <div class="detail-header">
+          <span class="d-num">Agent 2</span>
+          <span class="d-name">원문 수집</span>
+          <span class="d-desc">크롤링 → 본문 추출 → 핵심 팩트</span>
+        </div>
+        <div class="detail-body">
+          <div class="grid3" id="agent2-cards"></div>
+        </div>
       </div>
-      <div class="agent-step" onclick="selectAgent(4)" id="step-4">
-        <div class="step-icon">🧐</div>
-        <div class="step-label">Agent 4</div>
-        <div class="step-sub">검토</div>
+
+      <div class="agent-detail" id="agent-panel-3">
+        <div class="detail-header">
+          <span class="d-num">Agent 3</span>
+          <span class="d-name">대본 생성</span>
+          <span class="d-desc">웰시코기 톤 → 50초 3파트</span>
+        </div>
+        <div class="detail-body">
+          <div class="grid3" id="agent3-cards"></div>
+        </div>
       </div>
-      <div class="agent-step" onclick="selectAgent(5)" id="step-5">
-        <div class="step-icon">📈</div>
-        <div class="step-label">Agent 5</div>
-        <div class="step-sub">SEO</div>
+
+      <div class="agent-detail" id="agent-panel-4">
+        <div class="detail-header">
+          <span class="d-num">Agent 4</span>
+          <span class="d-name">검토</span>
+          <span class="d-desc">팩트 · 톤 · 유튜브 정책</span>
+        </div>
+        <div class="detail-body">
+          <div class="grid3" id="agent4-cards"></div>
+        </div>
       </div>
-      <div class="agent-step" onclick="selectAgent(6)" id="step-6">
-        <div class="step-icon">✏️</div>
-        <div class="step-label">Agent 6</div>
-        <div class="step-sub">편집·승인</div>
+
+      <div class="agent-detail" id="agent-panel-5">
+        <div class="detail-header">
+          <span class="d-num">Agent 5</span>
+          <span class="d-name">유튜브 SEO</span>
+          <span class="d-desc">CTR 제목 3개 · 태그 15개 · 썸네일</span>
+        </div>
+        <div class="detail-body">
+          <div class="grid3" id="agent5-cards"></div>
+        </div>
+      </div>
+
+      <div class="agent-detail" id="agent-panel-6">
+        <div class="detail-header">
+          <span class="d-num">Agent 6</span>
+          <span class="d-name">편집 · 승인</span>
+          <span class="d-desc">인라인 수정 → 승인 → 저장</span>
+        </div>
+        <div class="cards" id="cardsContainer"></div>
       </div>
     </div>
 
-    <!-- Agent Panels -->
-    <div class="agent-detail" id="agent-panel-1">
-      <div class="detail-header">
-        <span class="d-num">Agent 1</span>
-        <span class="d-name">뉴스 선별</span>
-        <span class="d-desc">RSS 수집 → 텔시코기 스코어링 → TOP 3</span>
-      </div>
-      <div class="detail-body">
-        <table class="sel-table" id="agent1-table"></table>
-      </div>
-    </div>
-
-    <div class="agent-detail" id="agent-panel-2">
-      <div class="detail-header">
-        <span class="d-num">Agent 2</span>
-        <span class="d-name">원문 수집</span>
-        <span class="d-desc">크롤링 → 본문 추출 → 핵심 팩트</span>
-      </div>
-      <div class="detail-body">
-        <div class="grid3" id="agent2-cards"></div>
-      </div>
-    </div>
-
-    <div class="agent-detail" id="agent-panel-3">
-      <div class="detail-header">
-        <span class="d-num">Agent 3</span>
-        <span class="d-name">대본 생성</span>
-        <span class="d-desc">웰시코기 톤 → 50초 3파트</span>
-      </div>
-      <div class="detail-body">
-        <div class="grid3" id="agent3-cards"></div>
-      </div>
-    </div>
-
-    <div class="agent-detail" id="agent-panel-4">
-      <div class="detail-header">
-        <span class="d-num">Agent 4</span>
-        <span class="d-name">검토</span>
-        <span class="d-desc">팩트 · 톤 · 유튜브 정책</span>
-      </div>
-      <div class="detail-body">
-        <div class="grid3" id="agent4-cards"></div>
-      </div>
-    </div>
-
-    <div class="agent-detail" id="agent-panel-5">
-      <div class="detail-header">
-        <span class="d-num">Agent 5</span>
-        <span class="d-name">유튜브 SEO</span>
-        <span class="d-desc">CTR 제목 3개 · 태그 15개 · 썸네일</span>
-      </div>
-      <div class="detail-body">
-        <div class="grid3" id="agent5-cards"></div>
-      </div>
-    </div>
-
-    <div class="agent-detail" id="agent-panel-6">
-      <div class="detail-header">
-        <span class="d-num">Agent 6</span>
-        <span class="d-name">편집 · 승인</span>
-        <span class="d-desc">인라인 수정 → 승인 → 저장</span>
-      </div>
-      <div class="cards" id="cardsContainer"></div>
-    </div>
   </div>
 
-</div>
+  <div class="save-bar">
+    <span class="save-status" id="saveStatus">승인된 대본 없음</span>
+    <button class="btn-save" id="btnSave" disabled onclick="saveApproved()">승인 대본 저장</button>
+  </div>
+  <div class="toast" id="toast"></div>
 
-<div class="save-bar">
-  <span class="save-status" id="saveStatus">승인된 대본 없음</span>
-  <button class="btn-save" id="btnSave" disabled onclick="saveApproved()">승인 대본 저장</button>
-</div>
-<div class="toast" id="toast"></div>
+  <script>
+    const DATA = {
+      "generated_at": "2026-02-25T09:00:00Z",
+      "all_articles": [
+        { "rank": 1, "score": 100, "source": "Tom's Hardware / Reuters", "title": "US grants Samsung and SK Hynix 2026 licenses for chipmaking tool shipments to China", "url": "https://www.tomshardware.com/tech-industry/us-grants-samsung-and-sk-hynix-2026-licenses-for-chipmaking-tool-shipments-to-china", "date": "2025-12-30", "keywords": ["삼성", "SK하이닉스", "반도체", "중국", "수출규제"] },
+        { "rank": 2, "score": 62, "source": "Bloomberg / TheEdge", "title": "South Korea's Early Exports Surge as AI Boom Fuels Chip Demand", "url": "https://klse.i3investor.com/web/blog/detail/ceomorningbrief/2026-02-24", "date": "2026-02-23", "keywords": ["한국수출", "반도체", "AI", "HBM", "삼성"] },
+        { "rank": 3, "score": 42, "source": "CNBC", "title": "OpenAI resets spending expectations — compute target is around $600 billion by 2030", "url": "https://www.cnbc.com/2026/02/20/openai-resets-spend-expectations", "date": "2026-02-20", "keywords": ["OpenAI", "AI투자", "NVIDIA", "ChatGPT"] },
+        { "score": 38, "source": "Reuters", "title": "Trump administration to impose 25% tariffs on auto imports starting March", "url": "https://www.reuters.com/business/autos-transportation/trump-auto-tariffs", "date": "2026-02-24", "keywords": ["트럼프", "관세", "자동차", "한국"] },
+        { "score": 35, "source": "Nikkei Asia", "title": "Japan and South Korea push for joint rare earth supply chain amid China export curbs", "url": "https://asia.nikkei.com/Economy/Japan-South-Korea-rare-earth", "date": "2026-02-22", "keywords": ["희토류", "한일", "중국", "공급망"] },
+        { "score": 30, "source": "TechCrunch", "title": "Google DeepMind releases Gemini Ultra 2 — benchmarks challenge GPT-5", "url": "https://techcrunch.com/2026/02/21/google-deepmind-gemini-ultra-2", "date": "2026-02-21", "keywords": ["구글", "AI", "Gemini", "GPT"] },
+        { "score": 28, "source": "AP News", "title": "Fed holds rates steady, signals two cuts possible in 2026", "url": "https://apnews.com/article/federal-reserve-rates-2026", "date": "2026-02-20", "keywords": ["연준", "금리", "미국경제"] },
+        { "score": 22, "source": "CNBC", "title": "Oil prices slip as OPEC+ signals supply extension through Q2", "url": "https://www.cnbc.com/2026/02/19/opec-supply-extension", "date": "2026-02-19", "keywords": ["유가", "OPEC", "원유"] },
+        { "score": 18, "source": "The Verge", "title": "Apple's iOS 20 leak reveals satellite messaging and AI integration overhaul", "url": "https://www.theverge.com/2026/02/18/apple-ios-20-leak", "date": "2026-02-18", "keywords": ["애플", "iOS", "AI"] },
+        { "score": 14, "source": "연합뉴스 EN", "title": "South Korea's birth rate hits new low at 0.68 in 2025", "url": "https://en.yna.co.kr/view/AEN20260217", "date": "2026-02-17", "keywords": ["출생률", "한국", "인구"] }
+      ],
+      "scripts": [
+        {
+          "id": "2026-02-25-001", "rank": 1, "score": 100,
+          "source": "Tom's Hardware / Reuters",
+          "article_title": "US grants Samsung and SK Hynix 2026 licenses for chipmaking tool shipments to China",
+          "source_url": "https://www.tomshardware.com/tech-industry/us-grants-samsung-and-sk-hynix-2026-licenses-for-chipmaking-tool-shipments-to-china",
+          "published_at": "2025-12-30",
+          "key_facts": [
+            "미국, 삼성·SK하이닉스에 2026년 중국 반도체 장비 수출 연간 라이센스 승인",
+            "기존 VEU 영구 면제 → 2025년 12월 31일 만료, 매년 개별 승인으로 전환",
+            "Samsung, SK Hynix, TSMC 모두 동일 적용",
+            "Applied Materials, Lam Research, KLA 등 미국 장비업체도 영향권",
+            "중국, 자국 장비 사용 50% 목표 자립화 추진 중",
+            "트럼프 행정부, 오바마·바이든 시절 면제 '지나치게 관대했다' 비판"
+          ],
+          "body_full": "The U.S. government approved annual export licenses allowing Samsung Electronics and SK Hynix to ship chipmaking equipment to their manufacturing facilities in China throughout 2026.\n\nUnder the previous regime, Samsung, SK Hynix, and TSMC benefited from so-called Validated End-User (VEU) status, which allowed qualifying factories in China to receive U.S.-controlled semiconductor tools without seeking individual export licenses. That status lapsed on December 31.\n\nThe new licensing system replaces broad waivers with annual reviews, requiring explicit U.S. approval for each shipment of chipmaking tools to China starting January 1, 2026.\n\n[Source: Reuters / Tom's Hardware — 2025-12-30]",
+          "script": {
+            "hook": "미국이 삼성이랑 SK하이닉스한테 중국 공장 허락을 1년짜리 단기로 바꿨어. 이게 왜 문제냐면~",
+            "explain": "원래 삼성이랑 SK하이닉스는 미국 반도체 장비를 중국 공장에 계속 쓸 수 있는 영구 허가(VEU)를 가지고 있었어. 근데 이게 2025년 12월 31일에 만료되고, 이제부터는 매년 미국 정부한테 허락을 새로 받아야 하는 구조로 바뀐 거야. 2026년 치는 일단 승인났어.",
+            "korea_angle": "그래서 우리한테 뭔 상관이냐면, 이제 매년 미국 눈치를 봐야 한다는 거야. 올해는 됐는데 내년에 미중 관계가 나빠지면? 삼성이랑 SK하이닉스 중국 공장이 통째로 멈출 수도 있어. 불확실성이 엄청 커진 거지."
+          },
+          "review": { "overall_pass": true, "issues": [{ "type": "PASS", "msg": "팩트·톤·정책 이상 없음" }] },
+          "seo": {
+            "titles": ["삼성·SK하이닉스 중국 공장 1년마다 미국 눈치 봐야 한다", "결국 터졌다 — 미국이 삼성 중국 허가를 1년짜리로 바꾼 이유", "영구 허가 사라졌다 — 삼성·SK하이닉스 중국 공장 어떻게 되나"],
+            "tags": ["삼성", "SK하이닉스", "반도체", "미중무역", "수출규제", "반도체뉴스", "미국규제", "중국공장", "웰시코기", "글로벌뉴스", "경제뉴스", "한국경제", "반도체최신뉴스", "삼성중국", "SK하이닉스중국"],
+            "thumbnail": { "line1": "미국이 바꿨다", "line2": "삼성·SK 1년짜리 허가로" }
+          },
+          "status": "draft"
+        },
+        {
+          "id": "2026-02-25-002", "rank": 2, "score": 62,
+          "source": "Bloomberg / TheEdge",
+          "article_title": "South Korea's Early Exports Surge as AI Boom Fuels Chip Demand",
+          "source_url": "https://klse.i3investor.com/web/blog/detail/ceomorningbrief/2026-02-24-story-h500705366",
+          "published_at": "2026-02-23",
+          "key_facts": [
+            "2월 첫 20일 수출 +47.3% (근무일 조정), 미조정 기준 +23.5%",
+            "반도체 수출 +134% — AI 데이터센터 수요 주도",
+            "컴퓨터 주변기기 +129%, 석유화학 +11%",
+            "자동차 -27%, 자동차 부품 -21% (미국 관세 영향)",
+            "대중 +31%, 대미 +22%, 대EU +11.4%, 대만 +76.4%",
+            "무역수지 흑자 49억 5000만 달러"
+          ],
+          "body_full": "South Korea's exports extended their growth momentum in early February, driven by resilient semiconductor demand.\n\nExports adjusted for working-day differences climbed 47.3% from a year earlier in the first 20 days of February. Semiconductor exports climbed 134%, extending solid gains driven by investment in artificial intelligence and data centres.\n\nMeanwhile, auto exports fell almost 27%, reflecting ongoing adjustments to the US tariff regime.\n\n[Source: Bloomberg / TheEdge — 2026-02-23]",
+          "script": {
+            "hook": "한국 수출이 47% 넘게 터졌어. 근데 이거 반도체 혼자 다 해먹은 거 알아?",
+            "explain": "2026년 2월 첫 20일 동안 한국 수출이 작년 같은 기간보다 47.3%나 올랐어. 그 중에 반도체가 무려 134% 급등. AI 데이터센터 짓는 데 메모리 칩이 엄청나게 들어가거든. 삼성 HBM, SK하이닉스 HBM3E가 지금 전 세계 AI 서버에 다 꽂히고 있는 거야.",
+            "korea_angle": "그래서 우리한테 뭔 상관이냐면, 이게 진짜 좋은 신호야. AI 투자가 계속 늘면 한국 반도체 수출도 같이 올라가는 구조거든. 삼성이 미국 텍사스에 23조 원짜리 공장 짓고 있고, SK하이닉스도 인디애나에 약 5조 원 투자 중이야."
+          },
+          "review": { "overall_pass": true, "issues": [{ "type": "PASS", "msg": "팩트 수정 반영 완료 (SK하이닉스 인디애나 '약 5조 원'으로 정정)" }] },
+          "seo": {
+            "titles": ["한국 수출 47% 폭등 — 반도체 혼자 134% 찍었다", "AI 덕분에 한국 수출 대박 — 근데 얼마나 오래갈까", "삼성·SK하이닉스 HBM이 한국 먹여살린다 — 2월 수출 충격"],
+            "tags": ["한국수출", "반도체수출", "HBM", "SK하이닉스", "삼성", "AI반도체", "수출급증", "한국경제뉴스", "웰시코기", "글로벌뉴스", "경제뉴스", "한국경제", "반도체최신", "HBM수요", "AI데이터센터"],
+            "thumbnail": { "line1": "반도체 134% 찍었다", "line2": "한국 수출 대박난 이유" }
+          },
+          "status": "draft"
+        },
+        {
+          "id": "2026-02-25-003", "rank": 3, "score": 42,
+          "source": "CNBC",
+          "article_title": "OpenAI resets spending expectations — compute target is around $600 billion by 2030",
+          "source_url": "https://www.cnbc.com/2026/02/20/openai-resets-spend-expectations-targets-around-600-billion-by-2030.html",
+          "published_at": "2026-02-20",
+          "key_facts": [
+            "OpenAI 2030 지출 목표 6000억 달러 — 기존 1.4조 달러에서 하향",
+            "2025년 매출 131억 달러 (목표 100억달러 초과), 지출 80억달러",
+            "ChatGPT 주간 활성 사용자 9억 명",
+            "NVIDIA 300억 달러 투자 협의 — 기업가치 7300억달러 예상",
+            "SoftBank, Amazon도 전략적 투자자 참여 예정",
+            "2030년 매출 목표 2800억 달러"
+          ],
+          "body_full": "OpenAI is resetting its spending expectations, telling investors the compute target is around $600 billion by 2030. This is a significant shift from the previously touted $1.4 trillion in infrastructure commitments.\n\nOpenAI generated $13.1 billion in revenue in 2025, up from its $10 billion target. ChatGPT now supports more than 900 million weekly active users.\n\nOpenAI is finalizing a funding round with Nvidia in discussions to invest up to $30 billion, valuing the company at $730 billion.\n\n[Source: CNBC — 2026-02-20]",
+          "script": {
+            "hook": "OpenAI가 '1경 9천조 쓸게요' 하더니 갑자기 820조로 목표 낮췄어. 무슨 일이야?",
+            "explain": "OpenAI가 원래 인프라에 1.4조 달러(약 1경 9천조 원) 쓰겠다고 했는데, 이번에 2030년까지 6000억 달러(약 820조 원)로 확 낮췄어. 매출은 잘 나오고 있어 — 2025년에 131억 달러 벌었거든. 근데 AI 인프라 비용 대비 수익이 맞냐는 투자자 압박이 계속 있었던 거야.",
+            "korea_angle": "그래서 우리한테 뭔 상관이냐면, OpenAI가 NVIDIA한테 약 30조 원 투자 받으려 하고 있어. NVIDIA 돈이 더 생기면? 그 칩에 들어가는 HBM 메모리 납품하는 SK하이닉스한테 주문이 또 들어오는 거야. AI 돈이 어떻게 흘러가는지 보이지?"
+          },
+          "review": { "overall_pass": true, "issues": [{ "type": "PASS", "msg": "팩트·톤·정책 이상 없음" }] },
+          "seo": {
+            "titles": ["OpenAI 목표 갑자기 낮췄다 — 1경에서 820조로 왜?", "ChatGPT 회사가 지갑 닫은 이유 — 투자자들 뭐라 했길래", "OpenAI 2030 계획 바뀌었다 — 한국 반도체엔 호재야"],
+            "tags": ["OpenAI", "ChatGPT", "AI투자", "NVIDIA", "AI인프라", "빅테크뉴스", "AI비용", "SK하이닉스HBM", "웰시코기", "글로벌뉴스", "경제뉴스", "한국경제", "OpenAI최신", "AI반도체투자", "HBM수요"],
+            "thumbnail": { "line1": "OpenAI 지갑 닫았다", "line2": "근데 한국엔 호재?" }
+          },
+          "status": "draft"
+        }
+      ]
+    };
 
-<script>
-const DATA = {
-  "generated_at": "2026-02-25T09:00:00Z",
-  "scripts": [
-    {
-      "id": "2026-02-25-001", "rank": 1, "score": 100,
-      "source": "Tom's Hardware / Reuters",
-      "article_title": "US grants Samsung and SK Hynix 2026 licenses for chipmaking tool shipments to China",
-      "source_url": "https://www.tomshardware.com/tech-industry/us-grants-samsung-and-sk-hynix-2026-licenses-for-chipmaking-tool-shipments-to-china",
-      "published_at": "2025-12-30",
-      "key_facts": [
-        "미국, 삼성·SK하이닉스에 2026년 중국 반도체 장비 수출 연간 라이센스 승인",
-        "기존 VEU 영구 면제 → 2025년 12월 31일 만료, 매년 개별 승인으로 전환",
-        "Samsung, SK Hynix, TSMC 모두 동일 적용",
-        "Applied Materials, Lam Research, KLA 등 미국 장비업체도 영향권",
-        "중국, 자국 장비 사용 50% 목표 자립화 추진 중",
-        "트럼프 행정부, 오바마·바이든 시절 면제 '지나치게 관대했다' 비판"
-      ],
-      "body_full": "The U.S. government approved annual export licenses allowing Samsung Electronics and SK Hynix to ship chipmaking equipment to their manufacturing facilities in China throughout 2026.\n\nUnder the previous regime, Samsung, SK Hynix, and TSMC benefited from so-called Validated End-User (VEU) status, which allowed qualifying factories in China to receive U.S.-controlled semiconductor tools without seeking individual export licenses. That status lapsed on December 31.\n\nThe new licensing system replaces broad waivers with annual reviews, requiring explicit U.S. approval for each shipment of chipmaking tools to China starting January 1, 2026.\n\n[Source: Reuters / Tom's Hardware — 2025-12-30]",
-      "script": {
-        "hook": "미국이 삼성이랑 SK하이닉스한테 중국 공장 허락을 1년짜리 단기로 바꿨어. 이게 왜 문제냐면~",
-        "explain": "원래 삼성이랑 SK하이닉스는 미국 반도체 장비를 중국 공장에 계속 쓸 수 있는 영구 허가(VEU)를 가지고 있었어. 근데 이게 2025년 12월 31일에 만료되고, 이제부터는 매년 미국 정부한테 허락을 새로 받아야 하는 구조로 바뀐 거야. 2026년 치는 일단 승인났어.",
-        "korea_angle": "그래서 우리한테 뭔 상관이냐면, 이제 매년 미국 눈치를 봐야 한다는 거야. 올해는 됐는데 내년에 미중 관계가 나빠지면? 삼성이랑 SK하이닉스 중국 공장이 통째로 멈출 수도 있어. 불확실성이 엄청 커진 거지."
-      },
-      "review": { "overall_pass": true, "issues": [{"type": "PASS", "msg": "팩트·톤·정책 이상 없음"}] },
-      "seo": {
-        "titles": ["삼성·SK하이닉스 중국 공장 1년마다 미국 눈치 봐야 한다", "결국 터졌다 — 미국이 삼성 중국 허가를 1년짜리로 바꾼 이유", "영구 허가 사라졌다 — 삼성·SK하이닉스 중국 공장 어떻게 되나"],
-        "tags": ["삼성","SK하이닉스","반도체","미중무역","수출규제","반도체뉴스","미국규제","중국공장","웰시코기","글로벌뉴스","경제뉴스","한국경제","반도체최신뉴스","삼성중국","SK하이닉스중국"],
-        "thumbnail": {"line1": "미국이 바꿨다", "line2": "삼성·SK 1년짜리 허가로"}
-      },
-      "status": "draft"
-    },
-    {
-      "id": "2026-02-25-002", "rank": 2, "score": 62,
-      "source": "Bloomberg / TheEdge",
-      "article_title": "South Korea's Early Exports Surge as AI Boom Fuels Chip Demand",
-      "source_url": "https://klse.i3investor.com/web/blog/detail/ceomorningbrief/2026-02-24-story-h500705366",
-      "published_at": "2026-02-23",
-      "key_facts": [
-        "2월 첫 20일 수출 +47.3% (근무일 조정), 미조정 기준 +23.5%",
-        "반도체 수출 +134% — AI 데이터센터 수요 주도",
-        "컴퓨터 주변기기 +129%, 석유화학 +11%",
-        "자동차 -27%, 자동차 부품 -21% (미국 관세 영향)",
-        "대중 +31%, 대미 +22%, 대EU +11.4%, 대만 +76.4%",
-        "무역수지 흑자 49억 5000만 달러"
-      ],
-      "body_full": "South Korea's exports extended their growth momentum in early February, driven by resilient semiconductor demand.\n\nExports adjusted for working-day differences climbed 47.3% from a year earlier in the first 20 days of February. Semiconductor exports climbed 134%, extending solid gains driven by investment in artificial intelligence and data centres.\n\nMeanwhile, auto exports fell almost 27%, reflecting ongoing adjustments to the US tariff regime.\n\n[Source: Bloomberg / TheEdge — 2026-02-23]",
-      "script": {
-        "hook": "한국 수출이 47% 넘게 터졌어. 근데 이거 반도체 혼자 다 해먹은 거 알아?",
-        "explain": "2026년 2월 첫 20일 동안 한국 수출이 작년 같은 기간보다 47.3%나 올랐어. 그 중에 반도체가 무려 134% 급등. AI 데이터센터 짓는 데 메모리 칩이 엄청나게 들어가거든. 삼성 HBM, SK하이닉스 HBM3E가 지금 전 세계 AI 서버에 다 꽂히고 있는 거야.",
-        "korea_angle": "그래서 우리한테 뭔 상관이냐면, 이게 진짜 좋은 신호야. AI 투자가 계속 늘면 한국 반도체 수출도 같이 올라가는 구조거든. 삼성이 미국 텍사스에 23조 원짜리 공장 짓고 있고, SK하이닉스도 인디애나에 약 5조 원 투자 중이야."
-      },
-      "review": { "overall_pass": true, "issues": [{"type": "PASS", "msg": "팩트 수정 반영 완료 (SK하이닉스 인디애나 '약 5조 원'으로 정정)"}] },
-      "seo": {
-        "titles": ["한국 수출 47% 폭등 — 반도체 혼자 134% 찍었다", "AI 덕분에 한국 수출 대박 — 근데 얼마나 오래갈까", "삼성·SK하이닉스 HBM이 한국 먹여살린다 — 2월 수출 충격"],
-        "tags": ["한국수출","반도체수출","HBM","SK하이닉스","삼성","AI반도체","수출급증","한국경제뉴스","웰시코기","글로벌뉴스","경제뉴스","한국경제","반도체최신","HBM수요","AI데이터센터"],
-        "thumbnail": {"line1": "반도체 134% 찍었다", "line2": "한국 수출 대박난 이유"}
-      },
-      "status": "draft"
-    },
-    {
-      "id": "2026-02-25-003", "rank": 3, "score": 42,
-      "source": "CNBC",
-      "article_title": "OpenAI resets spending expectations — compute target is around $600 billion by 2030",
-      "source_url": "https://www.cnbc.com/2026/02/20/openai-resets-spend-expectations-targets-around-600-billion-by-2030.html",
-      "published_at": "2026-02-20",
-      "key_facts": [
-        "OpenAI 2030 지출 목표 6000억 달러 — 기존 1.4조 달러에서 하향",
-        "2025년 매출 131억 달러 (목표 100억달러 초과), 지출 80억달러",
-        "ChatGPT 주간 활성 사용자 9억 명",
-        "NVIDIA 300억 달러 투자 협의 — 기업가치 7300억달러 예상",
-        "SoftBank, Amazon도 전략적 투자자 참여 예정",
-        "2030년 매출 목표 2800억 달러"
-      ],
-      "body_full": "OpenAI is resetting its spending expectations, telling investors the compute target is around $600 billion by 2030. This is a significant shift from the previously touted $1.4 trillion in infrastructure commitments.\n\nOpenAI generated $13.1 billion in revenue in 2025, up from its $10 billion target. ChatGPT now supports more than 900 million weekly active users.\n\nOpenAI is finalizing a funding round with Nvidia in discussions to invest up to $30 billion, valuing the company at $730 billion.\n\n[Source: CNBC — 2026-02-20]",
-      "script": {
-        "hook": "OpenAI가 '1경 9천조 쓸게요' 하더니 갑자기 820조로 목표 낮췄어. 무슨 일이야?",
-        "explain": "OpenAI가 원래 인프라에 1.4조 달러(약 1경 9천조 원) 쓰겠다고 했는데, 이번에 2030년까지 6000억 달러(약 820조 원)로 확 낮췄어. 매출은 잘 나오고 있어 — 2025년에 131억 달러 벌었거든. 근데 AI 인프라 비용 대비 수익이 맞냐는 투자자 압박이 계속 있었던 거야.",
-        "korea_angle": "그래서 우리한테 뭔 상관이냐면, OpenAI가 NVIDIA한테 약 30조 원 투자 받으려 하고 있어. NVIDIA 돈이 더 생기면? 그 칩에 들어가는 HBM 메모리 납품하는 SK하이닉스한테 주문이 또 들어오는 거야. AI 돈이 어떻게 흘러가는지 보이지?"
-      },
-      "review": { "overall_pass": true, "issues": [{"type": "PASS", "msg": "팩트·톤·정책 이상 없음"}] },
-      "seo": {
-        "titles": ["OpenAI 목표 갑자기 낮췄다 — 1경에서 820조로 왜?", "ChatGPT 회사가 지갑 닫은 이유 — 투자자들 뭐라 했길래", "OpenAI 2030 계획 바뀌었다 — 한국 반도체엔 호재야"],
-        "tags": ["OpenAI","ChatGPT","AI투자","NVIDIA","AI인프라","빅테크뉴스","AI비용","SK하이닉스HBM","웰시코기","글로벌뉴스","경제뉴스","한국경제","OpenAI최신","AI반도체투자","HBM수요"],
-        "thumbnail": {"line1": "OpenAI 지갑 닫았다", "line2": "근데 한국엔 호재?"}
-      },
-      "status": "draft"
+    // ── 날짜
+    document.getElementById('headerDate').textContent =
+      new Date(DATA.generated_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    // ── 파이프라인
+    let activeAgent = null;
+    function selectAgent(n) {
+      if (activeAgent === n) {
+        document.getElementById(`agent-panel-${n}`).classList.remove('open');
+        document.getElementById(`step-${n}`).classList.remove('active');
+        activeAgent = null; return;
+      }
+      if (activeAgent) {
+        document.getElementById(`agent-panel-${activeAgent}`).classList.remove('open');
+        document.getElementById(`step-${activeAgent}`).classList.remove('active');
+      }
+      activeAgent = n;
+      document.getElementById(`step-${n}`).classList.add('active');
+      document.getElementById(`agent-panel-${n}`).classList.add('open');
+      renderPanel(n);
     }
-  ]
-};
 
-// ── 날짜
-document.getElementById('headerDate').textContent =
-  new Date(DATA.generated_at).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
-
-// ── 파이프라인
-let activeAgent = null;
-function selectAgent(n) {
-  if (activeAgent === n) {
-    document.getElementById(`agent-panel-${n}`).classList.remove('open');
-    document.getElementById(`step-${n}`).classList.remove('active');
-    activeAgent = null; return;
-  }
-  if (activeAgent) {
-    document.getElementById(`agent-panel-${activeAgent}`).classList.remove('open');
-    document.getElementById(`step-${activeAgent}`).classList.remove('active');
-  }
-  activeAgent = n;
-  document.getElementById(`step-${n}`).classList.add('active');
-  document.getElementById(`agent-panel-${n}`).classList.add('open');
-  renderPanel(n);
-}
-
-function renderPanel(n) {
-  if (n === 6) { render(); return; }
-  const s = DATA.scripts;
-  if (n === 1) {
-    document.getElementById('agent1-table').innerHTML =
-      `<tr><th>순위</th><th>기사 제목</th><th>출처</th><th>점수</th></tr>` +
-      s.map(i => `<tr>
-        <td><span class="rank-badge">#${i.rank}</span></td>
-        <td><a href="${i.source_url}" target="_blank" style="color:#3b82f6;text-decoration:none;">${i.article_title}</a></td>
-        <td>${i.source}<br><span style="color:var(--text3);font-size:10px;">${i.published_at}</span></td>
-        <td><div class="score-bar"><div class="score-fill" style="width:${i.score}px;max-width:80px;"></div><span class="score-num">${i.score}</span></div></td>
+    function renderPanel(n) {
+      if (n === 6) { render(); return; }
+      const s = DATA.scripts;
+      if (n === 1) {
+        const all = DATA.all_articles;
+        document.getElementById('agent1-table').innerHTML =
+          `<tr><th>순위</th><th>기사 제목</th><th>출처 · 날짜</th><th>키워드</th><th>점수</th></tr>` +
+          all.map(i => `<tr class="${i.rank ? 'picked' : ''}">
+        <td>${i.rank ? `<span class="rank-badge">#${i.rank} 선택</span>` : '<span style="color:var(--text3);font-size:12px;">–</span>'}</td>
+        <td><a href="${i.url}" target="_blank" style="color:${i.rank ? 'var(--blue)' : 'var(--text3)'};text-decoration:none;font-size:13px;">${i.title}</a></td>
+        <td style="white-space:nowrap;">${i.source}<br><span style="color:var(--text3);font-size:11px;">${i.date}</span></td>
+        <td><div style="display:flex;flex-wrap:wrap;gap:3px;">${i.keywords.map(k => `<span style="background:rgba(255,255,255,.05);color:var(--text3);font-size:10px;padding:2px 7px;border-radius:20px;">${k}</span>`).join('')}</div></td>
+        <td><div class="score-bar"><div class="score-fill" style="width:${Math.round(i.score * .8)}px;max-width:80px;"></div><span class="score-num">${i.score}</span></div></td>
       </tr>`).join('');
-  }
-  if (n === 2) {
-    document.getElementById('agent2-cards').innerHTML = s.map((i,idx) => `
+      }
+      if (n === 2) {
+        document.getElementById('agent2-cards').innerHTML = s.map(i => `
       <div class="crawl-card">
         <div class="crawl-card-rank">#${i.rank} · ${i.source}</div>
         <div class="crawl-card-title">${i.article_title}</div>
-        <ul class="crawl-facts">${i.key_facts.map(f=>`<li>${f}</li>`).join('')}</ul>
-        <button class="btn-raw" onclick="toggleRaw(${idx})">📰 원문 펼치기</button>
-        <div id="raw-${idx}" class="raw-text">${i.body_full}</div>
+        <ul class="crawl-facts">${i.key_facts.map(f => `<li>${f}</li>`).join('')}</ul>
+        <div class="body-text">${i.body_full}</div>
       </div>`).join('');
-  }
-  if (n === 3) {
-    document.getElementById('agent3-cards').innerHTML = s.map(i => `
+      }
+      if (n === 3) {
+        document.getElementById('agent3-cards').innerHTML = s.map(i => `
       <div class="sp-card">
         <div class="sp-rank">#${i.rank} 대본 초안</div>
         <div class="sp-part"><div class="sp-part-label hook">⚡ Hook · 10초</div><div class="sp-part-text">${i.script.hook}</div></div>
         <div class="sp-part"><div class="sp-part-label explain">📖 Explain · 20초</div><div class="sp-part-text">${i.script.explain}</div></div>
         <div class="sp-part"><div class="sp-part-label korea">🇰🇷 Korea Angle · 20초</div><div class="sp-part-text">${i.script.korea_angle}</div></div>
       </div>`).join('');
-  }
-  if (n === 4) {
-    document.getElementById('agent4-cards').innerHTML = s.map(i => `
+      }
+      if (n === 4) {
+        document.getElementById('agent4-cards').innerHTML = s.map(i => `
       <div class="review-card">
         <div class="review-card-hd">
           <span class="review-card-rank">#${i.rank}</span>
-          <span class="verdict ${i.review.overall_pass?'verdict-pass':'verdict-fail'}">${i.review.overall_pass?'✓ PASS':'✗ FAIL'}</span>
+          <span class="verdict ${i.review.overall_pass ? 'verdict-pass' : 'verdict-fail'}">${i.review.overall_pass ? '✓ PASS' : '✗ FAIL'}</span>
         </div>
         <div>
-          ${i.review.issues.map(x=>`<div class="check-item"><span>${x.type==='PASS'?'✅':'⚠️'}</span><span>${x.msg}</span></div>`).join('')}
+          ${i.review.issues.map(x => `<div class="check-item"><span>${x.type === 'PASS' ? '✅' : '⚠️'}</span><span>${x.msg}</span></div>`).join('')}
           <div class="check-item"><span>✅</span><span>반말 톤 유지</span></div>
           <div class="check-item"><span>✅</span><span>Korea Angle 포함</span></div>
           <div class="check-item"><span>✅</span><span>유튜브 정책 이상 없음</span></div>
         </div>
       </div>`).join('');
-  }
-  if (n === 5) {
-    document.getElementById('agent5-cards').innerHTML = s.map(i => `
+      }
+      if (n === 5) {
+        document.getElementById('agent5-cards').innerHTML = s.map(i => `
       <div class="seo-card">
         <div class="seo-rank">#${i.rank} SEO</div>
-        ${i.seo.titles.map((t,ti)=>`<div class="seo-title-item ${ti===0?'t1':''}">${ti===0?'★ ':''}${t}</div>`).join('')}
+        ${i.seo.titles.map((t, ti) => `<div class="seo-title-item ${ti === 0 ? 't1' : ''}">${ti === 0 ? '★ ' : ''}${t}</div>`).join('')}
         <div class="seo-thumb">
           <div class="seo-thumb-l1">${i.seo.thumbnail.line1}</div>
           <div class="seo-thumb-l2">${i.seo.thumbnail.line2}</div>
         </div>
       </div>`).join('');
-  }
-}
+      }
+    }
 
-function toggleRaw(idx) {
-  const el = document.getElementById(`raw-${idx}`);
-  const btn = el.previousElementSibling;
-  const open = el.style.display === 'block';
-  el.style.display = open ? 'none' : 'block';
-  btn.textContent = open ? '📰 원문 펼치기' : '📰 원문 접기';
-}
 
-// ── 편집 카드
-function render() {
-  document.getElementById('cardsContainer').innerHTML = DATA.scripts.map((item, idx) => `
-    <div class="card ${item.status==='approved'?'approved':''}" id="card-${idx}">
+
+    // ── 편집 카드
+    function render() {
+      document.getElementById('cardsContainer').innerHTML = DATA.scripts.map((item, idx) => `
+    <div class="card ${item.status === 'approved' ? 'approved' : ''}" id="card-${idx}">
       <div class="card-header">
         <span class="card-rank">#${item.rank}</span>
         <span class="card-score">★ ${item.score}점</span>
@@ -723,74 +1303,75 @@ function render() {
       </div>
       <div class="review-inline">
         <div class="ri-label">Agent 4 검토 결과</div>
-        ${item.review.issues.map(i=>`<div class="ri-item"><span class="ri-tag ${i.type==='PASS'?'ri-pass':'ri-warn'}">${i.type}</span>${i.msg}</div>`).join('')}
+        ${item.review.issues.map(i => `<div class="ri-item"><span class="ri-tag ${i.type === 'PASS' ? 'ri-pass' : 'ri-warn'}">${i.type}</span>${i.msg}</div>`).join('')}
       </div>
       <div class="seo-edit-section">
         <div class="seo-edit-label">Agent 5 · 유튜브 SEO</div>
         <div class="title-options">
-          ${item.seo.titles.map((t,ti)=>`
+          ${item.seo.titles.map((t, ti) => `
             <div class="title-option">
-              <input type="radio" name="title-${idx}" id="t${idx}-${ti}" value="${ti}" ${ti===0?'checked':''} onchange="updateTitle(${idx},${ti})">
+              <input type="radio" name="title-${idx}" id="t${idx}-${ti}" value="${ti}" ${ti === 0 ? 'checked' : ''} onchange="updateTitle(${idx},${ti})">
               <label for="t${idx}-${ti}">${t}</label>
             </div>`).join('')}
         </div>
-        <div class="tags-list">${item.seo.tags.map(t=>`<span class="tag-item">#${t}</span>`).join('')}</div>
+        <div class="tags-list">${item.seo.tags.map(t => `<span class="tag-item">#${t}</span>`).join('')}</div>
         <div class="thumb-prev">
           <div class="t1">${item.seo.thumbnail.line1}</div>
           <div class="t2">${item.seo.thumbnail.line2}</div>
         </div>
       </div>
       <div class="card-footer">
-        <button class="btn-approve ${item.status==='approved'?'approved':''}" onclick="toggleApprove(${idx})">
-          ${item.status==='approved'?'✓ 승인됨':'승인'}
+        <button class="btn-approve ${item.status === 'approved' ? 'approved' : ''}" onclick="toggleApprove(${idx})">
+          ${item.status === 'approved' ? '✓ 승인됨' : '승인'}
         </button>
         <button class="btn-reset" onclick="resetCard(${idx})">초기화</button>
       </div>
     </div>`).join('');
-  updateSaveBar();
-}
+      updateSaveBar();
+    }
 
-function updateScript(idx, part, val) { DATA.scripts[idx].script[part] = val; }
-function updateTitle(idx, ti) { DATA.scripts[idx].selectedTitleIdx = ti; }
-function toggleApprove(idx) {
-  DATA.scripts[idx].status = DATA.scripts[idx].status === 'approved' ? 'draft' : 'approved';
-  render();
-}
-function resetCard(idx) {
-  if (!confirm('이 카드를 초기화할까요?')) return;
-  DATA.scripts[idx].status = 'draft'; render();
-}
-function updateSaveBar() {
-  const n = DATA.scripts.filter(s => s.status === 'approved').length;
-  const el = document.getElementById('saveStatus');
-  const btn = document.getElementById('btnSave');
-  el.textContent = n === 0 ? '승인된 대본 없음' : `${n}개 대본 승인됨`;
-  el.className = n === 0 ? 'save-status' : 'save-status has';
-  btn.disabled = n === 0;
-}
-function saveApproved() {
-  const approved = DATA.scripts.filter(s => s.status === 'approved').map(s => ({
-    id: s.id, rank: s.rank, source: s.source,
-    article_title: s.article_title, script: s.script,
-    selected_title: s.seo.titles[s.selectedTitleIdx ?? 0],
-    tags: s.seo.tags, thumbnail: s.seo.thumbnail,
-    approved_at: new Date().toISOString(), status: 'approved'
-  }));
-  const blob = new Blob([JSON.stringify({ approved }, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `approved_${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  showToast(`${approved.length}개 대본 저장 완료!`);
-}
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
+    function updateScript(idx, part, val) { DATA.scripts[idx].script[part] = val; }
+    function updateTitle(idx, ti) { DATA.scripts[idx].selectedTitleIdx = ti; }
+    function toggleApprove(idx) {
+      DATA.scripts[idx].status = DATA.scripts[idx].status === 'approved' ? 'draft' : 'approved';
+      render();
+    }
+    function resetCard(idx) {
+      if (!confirm('이 카드를 초기화할까요?')) return;
+      DATA.scripts[idx].status = 'draft'; render();
+    }
+    function updateSaveBar() {
+      const n = DATA.scripts.filter(s => s.status === 'approved').length;
+      const el = document.getElementById('saveStatus');
+      const btn = document.getElementById('btnSave');
+      el.textContent = n === 0 ? '승인된 대본 없음' : `${n}개 대본 승인됨`;
+      el.className = n === 0 ? 'save-status' : 'save-status has';
+      btn.disabled = n === 0;
+    }
+    function saveApproved() {
+      const approved = DATA.scripts.filter(s => s.status === 'approved').map(s => ({
+        id: s.id, rank: s.rank, source: s.source,
+        article_title: s.article_title, script: s.script,
+        selected_title: s.seo.titles[s.selectedTitleIdx ?? 0],
+        tags: s.seo.tags, thumbnail: s.seo.thumbnail,
+        approved_at: new Date().toISOString(), status: 'approved'
+      }));
+      const blob = new Blob([JSON.stringify({ approved }, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `approved_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      showToast(`${approved.length}개 대본 저장 완료!`);
+    }
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
 
-// 기본으로 Agent 6 (편집 카드) 열기
-selectAgent(6);
-</script>
+    // 기본으로 Agent 6 (편집 카드) 열기
+    selectAgent(6);
+  </script>
 </body>
+
 </html>
